@@ -37,7 +37,7 @@ class ImageEditing {
 
 	public ImageEditing() {
 		startFrame = new JFrame("Image Example");
-		startFrame.setSize(2000, 2000);
+		startFrame.setSize(1000, 1000);
 		welcomeText = new JLabel("Welcome to the Image Example", JLabel.CENTER);
 		welcomeText.setBounds(100, 50, 200, 40);
 
@@ -67,49 +67,49 @@ class ImageEditing {
         contrast = new JButton("Contrast");
         contrast.setActionCommand("CON");
         contrast.addActionListener(new ButtonClickListener());
-        contrast.setBounds(350, 150, 100, 40);
+        contrast.setBounds(200, 150, 100, 40);
 
         //highlight button
         highlight = new JButton("highlight");
         highlight.setActionCommand("HIGH");
         highlight.addActionListener(new ButtonClickListener());
-        highlight.setBounds(500, 150, 100, 40);
+        highlight.setBounds(200, 250, 100, 40);
 
         //reset button
         reset = new JButton("reset");
         reset.setActionCommand("RES");
         reset.addActionListener(new ButtonClickListener());
-        reset.setBounds(650, 150, 100, 40);
+        reset.setBounds(200, 350, 100, 40);
 
         //blur button
         blur = new JButton("blur");
         blur.setActionCommand("BLUR");
         blur.addActionListener(new ButtonClickListener());
-        blur.setBounds(800, 150, 100, 40);
+        blur.setBounds(200, 450, 100, 40);
 
         //rotate button
         rotate = new JButton("rotate");
         rotate.setActionCommand("ROT");
         rotate.addActionListener(new ButtonClickListener());
-        rotate.setBounds(950, 150, 100, 40);
+        rotate.setBounds(400, 150, 100, 40);
 
         //zoom buotton
         zoom = new JButton("zoom");
         zoom.setActionCommand("ZOOM");
         zoom.addActionListener(new ButtonClickListener());
-        zoom.setBounds(1100, 150, 100, 40);
+        zoom.setBounds(400, 250, 100, 40);
 
         //saturate 
         saturate = new JButton("saturate");
         saturate.setActionCommand("SAT");
         saturate.addActionListener(new ButtonClickListener());
-        saturate.setBounds(1350, 150, 100, 40);
+        saturate.setBounds(400, 350, 100, 40);
 
         //edger
         edgedec = new JButton("edge detection");
         edgedec.setActionCommand("EDG");
         edgedec.addActionListener(new ButtonClickListener());
-        edgedec.setBounds(1500, 150, 100, 40);
+        edgedec.setBounds(400, 450, 100, 40);
 
         pixelCol = new JLabel("");
         pixelCol.setBounds(100, 20, 250, 40);
@@ -117,19 +117,18 @@ class ImageEditing {
         yCoord = new JTextField("y");
         xCoord.setBounds(220,270,40,30);
         yCoord.setBounds(260,270,40,30);
-        startFrame.add(pixelCol);
+        /*startFrame.add(pixelCol);
         startFrame.add(xCoord);
-        startFrame.add(yCoord);
+        startFrame.add(yCoord); */
 
         change = new JButton("go RED");
         change.setActionCommand("CHANGE");
         change.addActionListener(new ButtonClickListener());
         change.setBounds(100, 270, 60, 30);
-        startFrame.add(change);
 
-        icon = new ImageIcon("daisy.png");
+        icon = new ImageIcon("samplewith2e.png");
         try {
-        	im = ImageIO.read(new File("daisy.png"));
+        	im = ImageIO.read(new File("samplewith2e.png"));
         }
         catch(IOException e) {
         	System.out.println("Error reading image: " + e.getMessage());
@@ -154,7 +153,6 @@ class ImageEditing {
 				f.add(p);
 				p.add(lab);
 				f.pack();
-				startFrame.add(getPixel);
                 startFrame.add(contrast);
                 startFrame.add(highlight);
                 startFrame.add(reset);
@@ -176,8 +174,9 @@ class ImageEditing {
          		int b = rgb & 0x000000ff;
    				String myColor = "[" + r + ", " + g +", " + b + "]";
          		pixelCol.setText("Color: " + myColor);
+            //start of contrast
          	}
-         	if (command.equals("CHANGE")) {
+         	if (command.equals("CON")) {
          		int width = im.getWidth();
          		int height = im.getHeight();
          		for (int i = 0; i < width; i++) {
@@ -187,28 +186,109 @@ class ImageEditing {
          				int r = (rgb & 0x00ff0000) >> 16;
          				int g = (rgb & 0x0000ff00) >> 8;
          				int b = rgb & 0x000000ff;
-         				r = r + 20;
-         				g = g + 20;
-         				b = b + 20;
-         				if (r > 255) {
-         					r = 255;
-         				}
-         				if (g > 255) {
-         					g = 255;
-         				}
-         				if (b > 255) {
-         					b = 255;
-         				}
+                        if (r >= 123 || g >=123 || b >= 123) {
+             				r = r + 20;
+             				g = g + 20;
+             				b = b + 20;
+             				if (r > 255) {
+             					r = 255;
+                                if (g >= 10) {
+                                    g = g - 10;
+                                } else {
+                                    g = 0;
+                                }
+                                if (b >= 10) {
+                                    b = b - 10;
+                                } else {
+                                    b = 0;
+                                }
+             				}
+
+             				if (g > 255) {
+             					g = 255;
+                                if (r >= 10) {
+                                    r = r - 10;
+                                } else {
+                                    r = 0;
+                                }
+                                if (b >= 10) {
+                                    b = b - 10;
+                                } else {
+                                    b = 0;
+                                }
+             				}
+             				if (b > 255) {
+             					b = 255;
+                                if (r >= 10) {
+                                    r = r - 10;
+                                } else {
+                                    r = 0;
+                                }
+                                if (g >= 10) {
+                                    g = g - 10;
+                                } else {
+                                    g = 0;
+                                }
+                            }
+             			} else {
+                            r = r - 20;
+                            g = g - 20;
+                            b = b - 20;
+                            if (r < 0) {
+                                r = 0;
+                            }
+
+                            if (g < 0) {
+                                g = 0;
+                            }
+                            if (b < 0) {
+                                b = 0;
+                            }
+                        }
+
          				int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
 
          				im.setRGB(i, j, col);
          			}
+                    //for (int i = 0; i < width; i = i + 1) {
+                    //    for (int j = 0; j < height; j = j + 1) {
+                    //        int col = col.remove(0);
+                    //        im.getRGB(i,j, col);
          		}
          		
          		icon = new ImageIcon(im);
          		lab.setIcon(icon);
          		lab.repaint();
          	}
-      	}     
-   	}
+            //end of contrast
+
+            //start of reset
+            if (command.equals("RES")) {
+                //for loop cuz it only works before if pressed twice, so looped 2 times for automatic presses, which works...
+                for (int i = 0; i < 2; i++) {                    
+                    f.dispose();
+                    f = new JFrame();
+                    p = new JPanel();
+                    lab = new JLabel(icon);
+                    icon = new ImageIcon("samplewith2e.png");
+                    try {
+                        im = ImageIO.read(new File("samplewith2e.png"));
+                    }
+                    catch(IOException j) {
+                        System.out.println("Error reading image: " + j.getMessage());
+                    }
+                    f.add(p);
+                    p.add(lab);
+                    f.pack();
+                }
+                f.setVisible(true);
+            }
+            //end of reset
+
+            //start of highlight
+            if (command.equals("HIGH")) {
+                
+            }
+      	}
+    }
 }
