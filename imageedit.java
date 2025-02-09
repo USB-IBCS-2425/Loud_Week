@@ -22,6 +22,10 @@ class ImageEditing {
     //required filters
     public JButton contrast;
 	public JButton highlight;
+    //highligh buttons
+    public JButton highred;
+    public JButton highgreen;
+    public JButton highblue;
 	public JButton reset;
     
     //optional filters
@@ -110,6 +114,24 @@ class ImageEditing {
         edgedec.setActionCommand("EDG");
         edgedec.addActionListener(new ButtonClickListener());
         edgedec.setBounds(400, 450, 100, 40);
+
+
+        highred = new JButton("highlight red");
+        highred.setActionCommand("HIGHRED");
+        highred.addActionListener(new ButtonClickListener());
+        highred.setBounds(600, 150, 100, 40);
+
+
+        highgreen = new JButton("highlight green");
+        highgreen.setActionCommand("HIGHGREEN");
+        highgreen.addActionListener(new ButtonClickListener());
+        highgreen.setBounds(600, 250, 100, 40);
+
+
+        highblue = new JButton("highlight blue");
+        highblue.setActionCommand("HIGHBLUE");
+        highblue.addActionListener(new ButtonClickListener());
+        highblue.setBounds(600, 350, 100, 40);
 
         pixelCol = new JLabel("");
         pixelCol.setBounds(100, 20, 250, 40);
@@ -287,7 +309,119 @@ class ImageEditing {
 
             //start of highlight
             if (command.equals("HIGH")) {
-                
+                startFrame.add(highred);
+                startFrame.add(highgreen);
+                startFrame.add(highblue);
+
+            }
+            if (command.equals("HIGHRED")) {              
+                int width = im.getWidth();
+                int height = im.getHeight();
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+                        if (r < b || r < g) {
+                            if (g > b){
+                                r = g;
+                                b = g;
+                            }
+                            if (b > g){
+                                r = b;
+                                g = b;
+                            }
+                        int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
+
+                        im.setRGB(i, j, col);
+                        }
+                    }
+                }
+            icon = new ImageIcon(im);
+            lab.setIcon(icon);
+            lab.repaint();
+            }
+            if (command.equals("HIGHGREEN")) {              
+                int width = im.getWidth();
+                int height = im.getHeight();
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+                        if (g < r || g < b) {
+                            if (r > b){
+                                b = r;
+                                g = r;
+                            }
+                            if (b > r){
+                                r = b;
+                                g = b;
+                            }
+                        int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
+
+                        im.setRGB(i, j, col);
+                        }
+                    }
+                }
+            icon = new ImageIcon(im);
+            lab.setIcon(icon);
+            lab.repaint();
+            }
+            if (command.equals("HIGHBLUE")) {              
+                int width = im.getWidth();
+                int height = im.getHeight();
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+                        if (b < g || b < r) {
+                            if (g > r){
+                                r = g;
+                                b = g;
+                            }
+                            if (r > g){
+                                b = r;
+                                g = r;
+                            }
+                        int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
+
+                        im.setRGB(i, j, col);
+                        }
+                    }
+                }
+            icon = new ImageIcon(im);
+            lab.setIcon(icon);
+            lab.repaint();
+            }
+            //end of highlight
+
+            //start of rotate
+            if (command.equals("ROT")) {                     
+                int width = im.getWidth();
+                int height = im.getHeight();
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+
+                        int newi = width - 1 - i;
+                        int newj = height - 1 - j;
+                        int xyz     
+                        int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
+
+
+                    }
+                }
+            icon = new ImageIcon(im);
+            lab.setIcon(icon);
+            lab.repaint();
             }
       	}
     }
