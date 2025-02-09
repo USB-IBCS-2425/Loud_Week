@@ -148,9 +148,9 @@ class ImageEditing {
         change.addActionListener(new ButtonClickListener());
         change.setBounds(100, 270, 60, 30);
 
-        icon = new ImageIcon("samplewith2e.png");
+        icon = new ImageIcon("sample.png");
         try {
-        	im = ImageIO.read(new File("samplewith2e.png"));
+        	im = ImageIO.read(new File("sample.png"));
         }
         catch(IOException e) {
         	System.out.println("Error reading image: " + e.getMessage());
@@ -292,9 +292,9 @@ class ImageEditing {
                     f = new JFrame();
                     p = new JPanel();
                     lab = new JLabel(icon);
-                    icon = new ImageIcon("samplewith2e.png");
+                    icon = new ImageIcon("sample.png");
                     try {
-                        im = ImageIO.read(new File("samplewith2e.png"));
+                        im = ImageIO.read(new File("sample.png"));
                     }
                     catch(IOException j) {
                         System.out.println("Error reading image: " + j.getMessage());
@@ -413,16 +413,83 @@ class ImageEditing {
 
                         int newi = width - 1 - i;
                         int newj = height - 1 - j;
-                        int xyz     
+                        int xyz = im.getRGB(newi, newj);
+                        int x = (xyz & 0x00ff0000) >> 16;
+                        int y = (xyz & 0x0000ff00) >> 8;
+                        int z = xyz & 0x000000ff;
+
                         int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
+                        int oppcol = (0xFF << 24) | (x << 16) | (y << 8)| z;
 
+                        im.setRGB(i, j, col);
+                        im.setRGB(newi, newj, oppcol);
 
+                        //this only rotates half the image cuz of the pixels replaced before it was saved
+                        //fix through running it both ways at the same time?
                     }
                 }
             icon = new ImageIcon(im);
             lab.setIcon(icon);
             lab.repaint();
             }
+            //end of rotate
+            
+            //start of edge detector
+            if (command.equals("EDGER")) {
+                int width = im.getWidth();
+                int height = im.getHeight();
+                for (int i = 0; i < width - 2; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+                        int sumrgb = r + g + b;
+                        int newi1 = i + 1;
+                        int newi2 = i + 2;
+                        int xyz = im.getRGB(newi1, j);
+                        int x = (rgb & 0x00ff0000) >> 16;
+                        int y = (rgb & 0x0000ff00) >> 8;
+                        int z = rgb & 0x000000ff;
+                        int sumxyz = x + y + z;
+                        int acd = im.getRGB(newi2, j);
+                        int a = (rgb & 0x00ff0000) >> 16;
+                        int c = (rgb & 0x0000ff00) >> 8;
+                        int d = rgb & 0x000000ff;
+                        int sumacd = a + c + d;
+                        if (sumxyz - sumrgb >= 123 | sumxyz - sumacd >= 123) {
+                            if (sumxyz - sumrgb >= 123) {
+                                r = 0;
+                                g = 0;
+                                b = 0;
+                                x = 0;
+                                y = 0;
+                                z = 0;
+                            }
+                            if (sumxyz - sumacd >= 123) {
+                                x = 0;
+                                y = 0;
+                                z = 0;
+                                a = 0;
+                                c = 0;
+                                d = 0;
+                            }
+                        } else {
+                            r = 255;
+                            g = 255;
+                            b = 255;
+                            x = 255;
+                            y = 255;
+                            z = 255;
+                            a = 255;
+                            c = 255;
+                            d = 255;
+                        }
+                    }
+                    int i = i + 1;
+                }       
+            }
+            //sigma 1 
       	}
     }
 }
