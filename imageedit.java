@@ -35,6 +35,8 @@ class ImageEditing {
     public JButton zoom;
     public JButton saturate;
     public JButton edgedec;
+    public JButton bnw;
+    public JButton gsc;
 
     public JFrame f;
     public JPanel p;
@@ -134,6 +136,16 @@ class ImageEditing {
         highblue.addActionListener(new ButtonClickListener());
         highblue.setBounds(600, 350, 100, 40);
 
+        bnw = new JButton("Black & White");
+        bnw.setActionCommand("B&W");
+        bnw.addActionListener(new ButtonClickListener());
+        bnw.setBounds(600, 450, 100, 40);
+
+        gsc = new JButton("Grayscale");
+        gsc.setActionCommand("GSC");
+        gsc.addActionListener(new ButtonClickListener());
+        gsc.setBounds(800, 150, 100, 40);
+
         pixelCol = new JLabel("");
         pixelCol.setBounds(100, 20, 250, 40);
         xCoord = new JTextField("x");
@@ -184,6 +196,8 @@ class ImageEditing {
                 startFrame.add(zoom);
                 startFrame.add(saturate);
                 startFrame.add(edgedec);
+                startFrame.add(bnw);
+                startFrame.add(gsc);
                 f.setVisible(true);
             }    
             if (command.equals("PIX")) {
@@ -313,7 +327,7 @@ class ImageEditing {
                 startFrame.add(highred);
                 startFrame.add(highgreen);
                 startFrame.add(highblue);
-
+                startFrame.repaint();
             }
             if (command.equals("HIGHRED")) {              
                 int width = im.getWidth();
@@ -608,6 +622,145 @@ class ImageEditing {
                 lab.repaint();
             }
             //end of saturation
+
+            //start of blur (i hate this one, doin it out of spite)
+                //ground work using assets from edge detector (surrounding pixels)
+            if (command.equals("BLUR")) {
+                int width = im.getWidth();
+                int height = im.getHeight();
+                int newwidth = width;
+                int newheight = height;
+                BufferedImage edged = new BufferedImage(newwidth, newheight, BufferedImage.TYPE_INT_RGB);
+
+                for (int i = 1; i < width - 1; i++) {
+                    for (int j = 1; j < height - 1; j++) {
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+
+                        int xyz = im.getRGB(i - 1, j);
+                        int x = (xyz & 0x00ff0000) >> 16;
+                        int y = (xyz & 0x0000ff00) >> 8;
+                        int z = xyz & 0x000000ff;
+
+                        int acd = im.getRGB(i + 1, j);
+                        int a = (acd & 0x00ff0000) >> 16;
+                        int c = (acd & 0x0000ff00) >> 8;
+                        int d = acd & 0x000000ff;
+
+
+                        int pou = im.getRGB(i, j - 1);
+                        int p = (pou & 0x00ff0000) >> 16;
+                        int o = (pou & 0x0000ff00) >> 8;
+                        int u = pou & 0x000000ff;
+
+
+                        int lkh = im.getRGB(i, j + 1);
+                        int l = (lkh & 0x00ff0000) >> 16;
+                        int k = (lkh & 0x0000ff00) >> 8;
+                        int h = lkh & 0x000000ff;
+
+                        int avgr = (r + x + a + p + l)/5;
+                        int avgg = (g + y + c + o + k)/5;
+                        int avgb = (b + z + d + u + h)/5;
+                        
+                        edged.setRGB(i, j, (0xFF << 24) | (avgr << 16) | (avgg << 8) | avgb);
+                    }
+                }
+                im = edged;
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
+            //end of blur (suprisingly easy after edge detection)
+
+            //2 funny iterations from the funny error from saturation effort
+
+            //start of black and white
+            if (command.equals("B&W")) {
+                int width = im.getWidth();
+                int height = im.getHeight();
+            //this section is credited to https://stackoverflow.com/questions/2399150/convert-rgb-value-to-hsv
+                //this chagnes how much saturated it gets (1.5 <=> 50%)
+                //saturate%
+                double saturation = 1.5;
+            
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i, j);
+                        int r = (rgb >> 16) & 0xFF;
+                        int g = (rgb >> 8) & 0xFF;
+                        int b = rgb & 0xFF;
+            
+                        //convert rgb to hsv
+                        float[] hsv = new float[3];
+                        Color.RGBtoHSB(r, g, b, hsv);
+            
+                        //adjust sat
+                        hsv[1] *= saturation;
+            
+                        //lock sat value (between 0 n 1)
+                        hsv[1] = Math.max(0, Math.min(hsv[1], 1));
+
+                        //credits to https://stackoverflow.com/questions/7896280/converting-from-hsv-hsb-in-java-to-rgb-without-using-java-awt-color-disallowe
+                        //convdert back
+                        int x = (int) (hsv[1] * 255);
+                        int y = (int) (hsv[1] * 255);
+                        int z = (int) (hsv[1] * 255);
+                        im.setRGB(i, j, (0xFF << 24) | (x << 16) | (y << 8) | z);
+                    }
+                }
+            
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
+            //end of black n white
+
+            //start of grayscale
+            if (command.equals("GSC")) {
+                int width = im.getWidth();
+                int height = im.getHeight();
+            //this section is credited to https://stackoverflow.com/questions/2399150/convert-rgb-value-to-hsv
+                //this chagnes how much saturated it gets (1.5 <=> 50%)
+                //saturate%
+                double saturation = 1.5;
+            
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i, j);
+                        int r = (rgb >> 16) & 0xFF;
+                        int g = (rgb >> 8) & 0xFF;
+                        int b = rgb & 0xFF;
+            
+                        //convert rgb to hsv
+                        float[] hsv = new float[3];
+                        Color.RGBtoHSB(r, g, b, hsv);
+            
+                        //adjust sat
+                        hsv[1] *= saturation;
+            
+                        //lock sat value (between 0 n 1)
+                        hsv[1] = Math.max(0, Math.min(hsv[1], 1));
+
+                        //credits to https://stackoverflow.com/questions/7896280/converting-from-hsv-hsb-in-java-to-rgb-without-using-java-awt-color-disallowe
+                        //convdert back
+                        int x = (int) (hsv[2] * 255);
+                        int y = (int) (hsv[2] * 255);
+                        int z = (int) (hsv[2] * 255);
+                        im.setRGB(i, j, (0xFF << 24) | (x << 16) | (y << 8) | z);
+                    }
+                }
+            
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
+            //end of grayscale
+
+            //end of the 2 funny iterations
+
         }
     }
 }
