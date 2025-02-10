@@ -566,6 +566,7 @@ class ImageEditing {
                 lab.setIcon(icon);
                 lab.repaint();
             }
+            //end of saturation
       	}
     }
 }
