@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.*;
+import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -8,25 +9,25 @@ import java.awt.event.*;
 import javax.swing.*;
 
 class ImageEditing {
-	private JFrame startFrame;
-	private JLabel welcomeText;
-	public ImageIcon icon;
-	public JLabel pixelCol;
-	public BufferedImage im;
-	public JButton daisyButton;
-	public JButton getPixel;
-	public JTextField xCoord;
-	public JTextField yCoord;
+    private JFrame startFrame;
+    private JLabel welcomeText;
+    public ImageIcon icon;
+    public JLabel pixelCol;
+    public BufferedImage im;
+    public JButton daisyButton;
+    public JButton getPixel;
+    public JTextField xCoord;
+    public JTextField yCoord;
     public JButton change;
 
     //required filters
     public JButton contrast;
-	public JButton highlight;
+    public JButton highlight;
     //highligh buttons
     public JButton highred;
     public JButton highgreen;
     public JButton highblue;
-	public JButton reset;
+    public JButton reset;
     
     //optional filters
     public JButton blur;
@@ -35,17 +36,17 @@ class ImageEditing {
     public JButton saturate;
     public JButton edgedec;
 
-	public JFrame f;
-	public JPanel p;
-	public JLabel lab;
+    public JFrame f;
+    public JPanel p;
+    public JLabel lab;
 
-	public ImageEditing() {
-		startFrame = new JFrame("Image Example");
-		startFrame.setSize(1000, 1000);
-		welcomeText = new JLabel("Welcome to the Image Example", JLabel.CENTER);
-		welcomeText.setBounds(100, 50, 200, 40);
+    public ImageEditing() {
+        startFrame = new JFrame("Image Example");
+        startFrame.setSize(1000, 1000);
+        welcomeText = new JLabel("Welcome to the Image Example", JLabel.CENTER);
+        welcomeText.setBounds(100, 50, 200, 40);
 
-		startFrame.addWindowListener(new WindowAdapter() {
+        startFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent){
                 System.exit(0);
             }        
@@ -148,33 +149,33 @@ class ImageEditing {
         change.addActionListener(new ButtonClickListener());
         change.setBounds(100, 270, 60, 30);
 
-        icon = new ImageIcon("sample.png");
+        icon = new ImageIcon("sigma.png");
         try {
-        	im = ImageIO.read(new File("sample.png"));
+            im = ImageIO.read(new File("sigma.png"));
         }
         catch(IOException e) {
-        	System.out.println("Error reading image: " + e.getMessage());
+            System.out.println("Error reading image: " + e.getMessage());
         }
 
         f = new JFrame();
-		p = new JPanel();
-		lab = new JLabel(icon);
+        p = new JPanel();
+        lab = new JLabel(icon);
 
         startFrame.setVisible(true);
-	}
+    }
 
-	public static void main(String[] args) {
-		ImageEditing mWin = new ImageEditing();
-	}
+    public static void main(String[] args) {
+        ImageEditing mWin = new ImageEditing();
+    }
 
-	private class ButtonClickListener implements ActionListener{
+    private class ButtonClickListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();  
          
             if(command.equals("DAISY"))  {
-				f.add(p);
-				p.add(lab);
-				f.pack();
+                f.add(p);
+                p.add(lab);
+                f.pack();
                 startFrame.add(contrast);
                 startFrame.add(highlight);
                 startFrame.add(reset);
@@ -183,37 +184,37 @@ class ImageEditing {
                 startFrame.add(zoom);
                 startFrame.add(saturate);
                 startFrame.add(edgedec);
-				f.setVisible(true);
-         	}    
-         	if (command.equals("PIX")) {
-         		// get coordinate
-         		int x = Integer.parseInt(xCoord.getText());
-         		int y = Integer.parseInt(yCoord.getText());
+                f.setVisible(true);
+            }    
+            if (command.equals("PIX")) {
+                // get coordinate
+                int x = Integer.parseInt(xCoord.getText());
+                int y = Integer.parseInt(yCoord.getText());
 
-         		int rgb = im.getRGB(x,y);
-         		int r = (rgb & 0x00ff0000) >> 16;
-         		int g = (rgb & 0x0000ff00) >> 8;
-         		int b = rgb & 0x000000ff;
-   				String myColor = "[" + r + ", " + g +", " + b + "]";
-         		pixelCol.setText("Color: " + myColor);
+                int rgb = im.getRGB(x,y);
+                int r = (rgb & 0x00ff0000) >> 16;
+                int g = (rgb & 0x0000ff00) >> 8;
+                int b = rgb & 0x000000ff;
+                String myColor = "[" + r + ", " + g +", " + b + "]";
+                pixelCol.setText("Color: " + myColor);
             //start of contrast
-         	}
-         	if (command.equals("CON")) {
-         		int width = im.getWidth();
-         		int height = im.getHeight();
-         		for (int i = 0; i < width; i++) {
-         			for (int j = 0; j < height; j++) {
+            }
+            if (command.equals("CON")) {
+                int width = im.getWidth();
+                int height = im.getHeight();
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
 
-         				int rgb = im.getRGB(i,j);
-         				int r = (rgb & 0x00ff0000) >> 16;
-         				int g = (rgb & 0x0000ff00) >> 8;
-         				int b = rgb & 0x000000ff;
+                        int rgb = im.getRGB(i,j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
                         if (r >= 123 || g >=123 || b >= 123) {
-             				r = r + 20;
-             				g = g + 20;
-             				b = b + 20;
-             				if (r > 255) {
-             					r = 255;
+                            r = r + 20;
+                            g = g + 20;
+                            b = b + 20;
+                            if (r > 255) {
+                                r = 255;
                                 if (g >= 10) {
                                     g = g - 10;
                                 } else {
@@ -224,10 +225,10 @@ class ImageEditing {
                                 } else {
                                     b = 0;
                                 }
-             				}
+                            }
 
-             				if (g > 255) {
-             					g = 255;
+                            if (g > 255) {
+                                g = 255;
                                 if (r >= 10) {
                                     r = r - 10;
                                 } else {
@@ -238,9 +239,9 @@ class ImageEditing {
                                 } else {
                                     b = 0;
                                 }
-             				}
-             				if (b > 255) {
-             					b = 255;
+                            }
+                            if (b > 255) {
+                                b = 255;
                                 if (r >= 10) {
                                     r = r - 10;
                                 } else {
@@ -252,7 +253,7 @@ class ImageEditing {
                                     g = 0;
                                 }
                             }
-             			} else {
+                        } else {
                             r = r - 20;
                             g = g - 20;
                             b = b - 20;
@@ -268,20 +269,20 @@ class ImageEditing {
                             }
                         }
 
-         				int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
+                        int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
 
-         				im.setRGB(i, j, col);
-         			}
+                        im.setRGB(i, j, col);
+                    }
                     //for (int i = 0; i < width; i = i + 1) {
                     //    for (int j = 0; j < height; j = j + 1) {
                     //        int col = col.remove(0);
                     //        im.getRGB(i,j, col);
-         		}
-         		
-         		icon = new ImageIcon(im);
-         		lab.setIcon(icon);
-         		lab.repaint();
-         	}
+                }
+                
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
             //end of contrast
 
             //start of reset
@@ -292,9 +293,9 @@ class ImageEditing {
                     f = new JFrame();
                     p = new JPanel();
                     lab = new JLabel(icon);
-                    icon = new ImageIcon("sample.png");
+                    icon = new ImageIcon("sigma.png");
                     try {
-                        im = ImageIO.read(new File("sample.png"));
+                        im = ImageIO.read(new File("sigma.png"));
                     }
                     catch(IOException j) {
                         System.out.println("Error reading image: " + j.getMessage());
@@ -401,28 +402,61 @@ class ImageEditing {
             //end of highlight
 
             //start of rotate
-            if (command.equals("ROT")) {                     
+                //highkey copied from zoom cuz buffered image but it works now
+             if (command.equals("ROT")) {
                 int width = im.getWidth();
                 int height = im.getHeight();
+            
+                int newwidth = width;
+                int newheight = height;
+            
+                BufferedImage rotated = new BufferedImage(newwidth, newheight, BufferedImage.TYPE_INT_RGB);
+            
                 for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+            
+                        //map new image coords to original image
+                        int newi = width - 1 - i;
+                        int newj = height - 1 - j;
+            
+                        //get rgb from original image
+                        int rgb = im.getRGB(i, j);
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
+            
+                        // Set RGB values in the zoomed image
+                        rotated.setRGB(newi, newj, (0xFF << 24) | (r << 16) | (g << 8) | b);
+                    }
+                }
+            
+                im = rotated; // Update the image
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
+
+                //this is here to be shamed
+
+                //rotate breaks the entire programme, it aint zoom's faults
+                //buffered image time
+          /*  if (command.equals("ROT")) {                     
+                int width = im.getWidth();
+                int height = im.getHeight();
+                int xwidth = width;
+                int yheight = height;
+                for (int i = 0; i < width; i = i++) {
                     for (int j = 0; j < height; j++) {
                         int rgb = im.getRGB(i,j);
                         int r = (rgb & 0x00ff0000) >> 16;
                         int g = (rgb & 0x0000ff00) >> 8;
                         int b = rgb & 0x000000ff;
 
-                        int newi = width - 1 - i;
-                        int newj = height - 1 - j;
-                        int xyz = im.getRGB(newi, newj);
-                        int x = (xyz & 0x00ff0000) >> 16;
-                        int y = (xyz & 0x0000ff00) >> 8;
-                        int z = xyz & 0x000000ff;
+                        BufferedImage rotated = new BufferedImage(xwidth, yheight, BufferedImage.TYPE_INT_RGB);
 
-                        int col = (0xFF << 24) | (r << 16) | (g << 8) | b;
-                        int oppcol = (0xFF << 24) | (x << 16) | (y << 8)| z;
 
-                        im.setRGB(i, j, col);
-                        im.setRGB(newi, newj, oppcol);
+
+                        zoomed.setRGB(i, j, (0xFF << 24) | (r << 16) | (g << 8) | b);
 
                         //this only rotates half the image cuz of the pixels replaced before it was saved
                         //fix through running it both ways at the same time?
@@ -431,68 +465,75 @@ class ImageEditing {
             icon = new ImageIcon(im);
             lab.setIcon(icon);
             lab.repaint();
-            }
+            } */
             //end of rotate
             
             //start of edge detector
-            if (command.equals("EDGER")) {
+                //nvm this works now cuz im silly and forgot to change rgb names of the other rgb values
+            if (command.equals("EDG")) {
                 int width = im.getWidth();
                 int height = im.getHeight();
-                for (int i = 0; i < width - 2; i++) {
-                    for (int j = 0; j < height; j++) {
+                int newwidth = width;
+                int newheight = height;
+                BufferedImage edged = new BufferedImage(newwidth, newheight, BufferedImage.TYPE_INT_RGB);
+
+                for (int i = 1; i < width - 1; i++) {
+                    for (int j = 1; j < height - 1; j++) {
                         int rgb = im.getRGB(i,j);
                         int r = (rgb & 0x00ff0000) >> 16;
                         int g = (rgb & 0x0000ff00) >> 8;
                         int b = rgb & 0x000000ff;
-                        int sumrgb = r + g + b;
-                        int newi1 = i + 1;
-                        int newi2 = i + 2;
-                        int xyz = im.getRGB(newi1, j);
-                        int x = (rgb & 0x00ff0000) >> 16;
-                        int y = (rgb & 0x0000ff00) >> 8;
-                        int z = rgb & 0x000000ff;
-                        int sumxyz = x + y + z;
-                        int acd = im.getRGB(newi2, j);
-                        int a = (rgb & 0x00ff0000) >> 16;
-                        int c = (rgb & 0x0000ff00) >> 8;
-                        int d = rgb & 0x000000ff;
-                        int sumacd = a + c + d;
-                        if (sumxyz - sumrgb >= 123 | sumxyz - sumacd >= 123) {
-                            if (sumxyz - sumrgb >= 123) {
-                                r = 0;
-                                g = 0;
-                                b = 0;
-                                x = 0;
-                                y = 0;
-                                z = 0;
-                            }
-                            if (sumxyz - sumacd >= 123) {
-                                x = 0;
-                                y = 0;
-                                z = 0;
-                                a = 0;
-                                c = 0;
-                                d = 0;
-                            }
+
+                        int xyz = im.getRGB(i - 1, j);
+                        int x = (xyz & 0x00ff0000) >> 16;
+                        int y = (xyz & 0x0000ff00) >> 8;
+                        int z = xyz & 0x000000ff;
+
+                        int acd = im.getRGB(i + 1, j);
+                        int a = (acd & 0x00ff0000) >> 16;
+                        int c = (acd & 0x0000ff00) >> 8;
+                        int d = acd & 0x000000ff;
+
+
+                        int pou = im.getRGB(i, j - 1);
+                        int p = (pou & 0x00ff0000) >> 16;
+                        int o = (pou & 0x0000ff00) >> 8;
+                        int u = pou & 0x000000ff;
+
+
+                        int lkh = im.getRGB(i, j + 1);
+                        int l = (lkh & 0x00ff0000) >> 16;
+                        int k = (lkh & 0x0000ff00) >> 8;
+                        int h = lkh & 0x000000ff;
+
+                        int avgr = (r + x + a + p + l)/5;
+                        int avgg = (g + y + c + o + k)/5;
+                        int avgb = (b + z + d + u + h)/5;
+
+                        int difr = Math.abs(r - avgr);
+                        int difg = Math.abs(g - avgg);
+                        int difb = Math.abs(b - avgb);
+
+                        if (difr + difg + difb > 30) {
+                            edged.setRGB(i, j, 0);
                         } else {
-                            r = 255;
-                            g = 255;
-                            b = 255;
-                            x = 255;
-                            y = 255;
-                            z = 255;
-                            a = 255;
-                            c = 255;
-                            d = 255;
+                            edged.setRGB(i, j, 0xFFFFFFFF);
                         }
                     }
-                    int i = i + 1;
-                }       
+                }
+                im = edged;
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
             }
             //end of edge detector
 
             //start of zoom
-            if (command.equals("ZOOM") {
+                //USE WITH CARE
+                //shit becomes laggy after a few consecutive clicks
+                //seems to be lasting even after program closure
+                    //nvm its fixed now, rotate was the problem n when reworked everythin now works smoothly
+            if (command.equals("ZOOM")) {
                 int width = im.getWidth();
                 int height = im.getHeight();
             
@@ -500,27 +541,27 @@ class ImageEditing {
                 int newwidth = (int) (width * 1.5);
                 int newheight = (int) (height * 1.5);
             
-                BufferedImage zoomed = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+                BufferedImage zoomed = new BufferedImage(newwidth, newheight, BufferedImage.TYPE_INT_RGB);
             
                 for (int newi = 0; newi < newwidth; newi++) {
                     for (int newj = 0; newj < newheight; newj++) {
             
-                        // Map new image coordinates to original image
+                        //map new image coords to original image
                         int origi = (int) (newi / 1.5);
                         int origj = (int) (newj / 1.5);
             
-                        // Get RGB values from original image
+                        //get rgb from original image
                         int rgb = im.getRGB(origi, origj);
-                        int r = (rgb >> 16) & 0xFF;
-                        int g = (rgb >> 8) & 0xFF;
-                        int b = rgb & 0xFF;
+                        int r = (rgb & 0x00ff0000) >> 16;
+                        int g = (rgb & 0x0000ff00) >> 8;
+                        int b = rgb & 0x000000ff;
             
                         // Set RGB values in the zoomed image
-                        zoomedImage.setRGB(newi, newj, (0xFF << 24) | (r << 16) | (g << 8) | b);
+                        zoomed.setRGB(newi, newj, (0xFF << 24) | (r << 16) | (g << 8) | b);
                     }
                 }
             
-                im = zoomedImage; // Update the image
+                im = zoomed; // Update the image
                 icon = new ImageIcon(im);
                 lab.setIcon(icon);
                 lab.repaint();
@@ -528,11 +569,13 @@ class ImageEditing {
             //end of zoom
 
             //start of saturation
+                        //FIXED IT, FINALLY, BLESS java.awt.Color;
+                        //aight this aint gonna become edge detection
             if (command.equals("SAT")) {
                 int width = im.getWidth();
                 int height = im.getHeight();
             //this section is credited to https://stackoverflow.com/questions/2399150/convert-rgb-value-to-hsv
-                //this chagnes how much saturated it gets (1.5 = 50%)
+                //this chagnes how much saturated it gets (1.5 <=> 50%)
                 //saturate%
                 double saturation = 1.5;
             
@@ -545,20 +588,18 @@ class ImageEditing {
             
                         //convert rgb to hsv
                         float[] hsv = new float[3];
-                        Color.RGBtoHSB(r, g, b, hsl);
+                        Color.RGBtoHSB(r, g, b, hsv);
             
                         //adjust sat
-                        hsl[1] *= saturation;
+                        hsv[1] *= saturation;
             
                         //lock sat value (between 0 n 1)
-                        hsl[1] = Math.max(0, Math.min(hsv[1], 1));
-            
-                        //convert hsv to rgb
-                        int x = (int) (hsv[2] * 255);
-                        int y = (int) (hsv[2] * 255);
-                        int z = (int) (hsv[2] * 255);
+                        hsv[1] = Math.max(0, Math.min(hsv[1], 1));
 
-                        im.setRGB(i, j, (0xFF << 24) | (x << 16) | (y << 8) | z);
+                        //credits to https://stackoverflow.com/questions/7896280/converting-from-hsv-hsb-in-java-to-rgb-without-using-java-awt-color-disallowe
+                        //convdert back
+                        int xyz = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
+                        im.setRGB(i, j, xyz); ;
                     }
                 }
             
@@ -567,6 +608,6 @@ class ImageEditing {
                 lab.repaint();
             }
             //end of saturation
-      	}
+        }
     }
 }
