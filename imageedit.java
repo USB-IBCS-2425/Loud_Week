@@ -489,7 +489,83 @@ class ImageEditing {
                     int i = i + 1;
                 }       
             }
-            //sigma 1 
+            //end of edge detector
+
+            //start of zoom
+            if (command.equals("ZOOM") {
+                int width = im.getWidth();
+                int height = im.getHeight();
+            
+                // Calculate new dimensions (50% zoom)
+                int newwidth = (int) (width * 1.5);
+                int newheight = (int) (height * 1.5);
+            
+                BufferedImage zoomed = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            
+                for (int newi = 0; newi < newwidth; newi++) {
+                    for (int newj = 0; newj < newheight; newj++) {
+            
+                        // Map new image coordinates to original image
+                        int origi = (int) (newi / 1.5);
+                        int origj = (int) (newj / 1.5);
+            
+                        // Get RGB values from original image
+                        int rgb = im.getRGB(origi, origj);
+                        int r = (rgb >> 16) & 0xFF;
+                        int g = (rgb >> 8) & 0xFF;
+                        int b = rgb & 0xFF;
+            
+                        // Set RGB values in the zoomed image
+                        zoomedImage.setRGB(newi, newj, (0xFF << 24) | (r << 16) | (g << 8) | b);
+                    }
+                }
+            
+                im = zoomedImage; // Update the image
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
+            //end of zoom
+
+            //start of saturation
+            if (command.equals("SAT")) {
+                int width = im.getWidth();
+                int height = im.getHeight();
+            //this section is credited to https://stackoverflow.com/questions/2399150/convert-rgb-value-to-hsv
+                //this chagnes how much saturated it gets (1.5 = 50%)
+                //saturate%
+                double saturation = 1.5;
+            
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        int rgb = im.getRGB(i, j);
+                        int r = (rgb >> 16) & 0xFF;
+                        int g = (rgb >> 8) & 0xFF;
+                        int b = rgb & 0xFF;
+            
+                        //convert rgb to hsv
+                        float[] hsv = new float[3];
+                        Color.RGBtoHSB(r, g, b, hsl);
+            
+                        //adjust sat
+                        hsl[1] *= saturation;
+            
+                        //lock sat value (between 0 n 1)
+                        hsl[1] = Math.max(0, Math.min(hsv[1], 1));
+            
+                        //convert hsv to rgb
+                        int x = (int) (hsv[2] * 255);
+                        int y = (int) (hsv[2] * 255);
+                        int z = (int) (hsv[2] * 255);
+
+                        im.setRGB(i, j, (0xFF << 24) | (x << 16) | (y << 8) | z);
+                    }
+                }
+            
+                icon = new ImageIcon(im);
+                lab.setIcon(icon);
+                lab.repaint();
+            }
       	}
     }
 }
